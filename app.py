@@ -155,13 +155,13 @@ writer.writeheader()
 writer.writerow(report)
 csv_report = csv_buffer.getvalue().encode("utf-8")
 
-    st.download_button(
-        label="⬇️ Download AI Security Scan Report",
-        data=csv_report,
-        file_name="secureai_guard_scan_report.csv",
-        mime="text/csv",
-        use_container_width=True
-    )
+st.download_button(
+    label="⬇️ Download AI Security Scan Report",
+    data=csv_report,
+    file_name="secureai_guard_scan_report.csv",
+    mime="text/csv",
+    use_container_width=True
+)
 
 st.markdown("---")
 st.caption(
