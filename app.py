@@ -1,5 +1,6 @@
 import streamlit as st
-import pandas as pd
+import csv
+import io
 import plotly.graph_objects as go
 from datetime import datetime
 from secureai_guard import SecureAIGuard
@@ -135,20 +136,24 @@ if scan_button:
     st.subheader("Masked / Sanitized Content")
     st.code(result["masked_text"], language="text")
 
-    report = pd.DataFrame([{
-        "scan_date": datetime.today().strftime("%Y-%m-%d"),
-        "scan_type": result["scan_type"],
-        "risk_score": result["risk_score"],
-        "risk_level": result["risk_level"],
-        "action": result["action"],
-        "flags": ", ".join(result["flags"]),
-        "recommendations": " | ".join(result["recommendations"]),
-        "masked_text": result["masked_text"],
-    }])
+    report = {
+    "scan_date": datetime.today().strftime("%Y-%m-%d"),
+    "scan_type": result["scan_type"],
+    "risk_score": result["risk_score"],
+    "risk_level": result["risk_level"],
+    "action": result["action"],
+    "flags": ", ".join(result["flags"]),
+    "recommendations": " | ".join(result["recommendations"]),
+    "masked_text": result["masked_text"],
+}
 
-    st.subheader("Download Security Report")
+st.subheader("Download Security Report")
 
-    csv_report = report.to_csv(index=False).encode("utf-8")
+csv_buffer = io.StringIO()
+writer = csv.DictWriter(csv_buffer, fieldnames=report.keys())
+writer.writeheader()
+writer.writerow(report)
+csv_report = csv_buffer.getvalue().encode("utf-8")
 
     st.download_button(
         label="⬇️ Download AI Security Scan Report",
